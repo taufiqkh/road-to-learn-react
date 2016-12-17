@@ -1,31 +1,15 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-const REPO_LIST = [
-  {
-    title: 'React',
-    url: 'https://facebook.github.io/react/',
-    author: 'Jordan Walke',
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: 'Redux',
-    url: 'https://github.com/reactjs/redux',
-    author: 'Dan Abramov, Andrew Clark',
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
-
 const DEFAULT_QUERY = 'redux';
+const DEFAULT_PAGE = 0;
+const DEFAULT_HPP = 10;
 
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
+const PARAM_PAGE = 'page=';
+const PARAM_PP = 'hitsPerPage=';
 
 function isSearched(query) {
   return function isQuerySearchedOn(item) {
@@ -44,6 +28,11 @@ const Search = ({ value, onChange, onSubmit, children }) =>
 const largeColumn = { width: '40%' };
 const midColumn = { width: '30%' };
 const smallColumn = { width: '15%' };
+
+const Button = ({ onClick, children }) =>
+  <button onClick={onClick} type="button">
+    {children}
+  </button>;
 
 const Table = ({ list }) =>
   (
@@ -73,7 +62,6 @@ class App extends Component {
 
     this.state = {
       result: null,
-      list: REPO_LIST,
       query: DEFAULT_QUERY,
     };
 
@@ -90,7 +78,7 @@ class App extends Component {
 
   onSearchSubmit(event) {
     const { query } = this.state;
-    this.fetchSearchTopStories(query);
+    this.fetchSearchTopStories(query, DEFAULT_PAGE);
     event.preventDefault();
   }
 
@@ -99,17 +87,21 @@ class App extends Component {
   }
 
   setSearchTopStories(result) {
-    this.setState({ result });
+    const { hits, page } = result;
+    const oldHits = page === 0 ? [] : this.state.result.hits;
+    const updatedHits = [...oldHits, ...hits];
+    this.setState({ result: { hits: updatedHits, page } });
   }
 
-  fetchSearchTopStories(query) {
-    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${query}`)
+  fetchSearchTopStories(query, page = 0, hpp = DEFAULT_HPP) {
+    fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${query}&${PARAM_PAGE}${page}&${PARAM_PP}${hpp}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result));
   }
 
   render() {
     const { query, result } = this.state;
+    const page = (result && result.page) || 0;
 
     return (
       <div className="page">
@@ -119,6 +111,9 @@ class App extends Component {
           </Search>
         </div>
         { result && <Table list={result.hits} /> }
+        <div className="interactions">
+          <Button onClick={() => this.fetchSearchTopStories(query, page + 1)}>More</Button>
+        </div>
       </div>
     );
   }
