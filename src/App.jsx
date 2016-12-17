@@ -27,14 +27,23 @@ class App extends Component {
 
     this.state = {
       list,
+      query: '',
     };
+
+    this.onSearchChange = this.onSearchChange.bind(this);
+  }
+
+  onSearchChange(event) {
+    this.setState({ query: event.target.value });
   }
 
   render() {
+    const query = this.state.query;
+
     return (
       <div className="App">
         <form>
-          <input type="text" />
+          <input type="text" value={query} onChange={this.onSearchChange} />
         </form>
         { this.state.list.map(item =>
           <div key={item.objectID}>
@@ -45,7 +54,7 @@ class App extends Component {
           </div>,
         )}
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
+          <img src={logo} className="App-logo" alt="logow" />
         </div>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
