@@ -27,6 +27,27 @@ function isSearched(query) {
   };
 }
 
+const Search = ({ value, onChange, children }) =>
+  (
+    <form>
+      {children} <input type="text" value={value} onChange={onChange} />
+    </form>
+  );
+
+const Table = ({ list, pattern }) =>
+  (
+    <div>
+      { list.filter(isSearched(pattern)).map(item =>
+        <div key={item.objectID}>
+          <span><a href={item.url}>{item.title}</a></span>
+          <span>{item.author}</span>
+          <span>{item.numComments}</span>
+          <span>{item.points}</span>
+        </div>,
+      )}
+    </div>
+  );
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -48,19 +69,12 @@ class App extends Component {
 
     return (
       <div className="App">
-        <form>
-          <input type="text" value={query} onChange={this.onSearchChange} />
-        </form>
-        { list.filter(isSearched(query)).map(item =>
-          <div key={item.objectID}>
-            <span><a href={item.url}>{item.title}</a></span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
-          </div>,
-        )}
+        <Search value={query} onChange={this.onSearchChange}>
+          Search
+        </Search>
+        <Table list={list} pattern={query} />
         <div className="App-header">
-          <img src={logo} className="App-logo" alt="logow" />
+          <img src={logo} className="App-logo" alt="logo" />
         </div>
         <p className="App-intro">
           To get started, edit <code>src/App.js</code> and save to reload.
