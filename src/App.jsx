@@ -33,10 +33,11 @@ function isSearched(query) {
   };
 }
 
-const Search = ({ value, onChange, children }) =>
+const Search = ({ value, onChange, onSubmit, children }) =>
   (
-    <form>
-      {children} <input type="text" value={value} onChange={onChange} />
+    <form onSubmit={onSubmit}>
+      <input type="text" value={value} onChange={onChange} />
+      <button type="submit">{children}</button>
     </form>
   );
 
@@ -44,10 +45,10 @@ const largeColumn = { width: '40%' };
 const midColumn = { width: '30%' };
 const smallColumn = { width: '15%' };
 
-const Table = ({ list, pattern }) =>
+const Table = ({ list }) =>
   (
     <div className="table">
-      { list.filter(isSearched(pattern)).map(item =>
+      { list.map(item =>
         <div key={item.objectID} className="table-row">
           <span style={largeColumn}>
             <a href={item.url}>{item.title}</a>
@@ -79,11 +80,18 @@ class App extends Component {
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
   }
 
   componentDidMount() {
     const { query } = this.state;
     this.fetchSearchTopStories(query);
+  }
+
+  onSearchSubmit(event) {
+    const { query } = this.state;
+    this.fetchSearchTopStories(query);
+    event.preventDefault();
   }
 
   onSearchChange(event) {
@@ -106,11 +114,11 @@ class App extends Component {
     return (
       <div className="page">
         <div className="interactions">
-          <Search value={query} onChange={this.onSearchChange}>
+          <Search value={query} onChange={this.onSearchChange} onSubmit={this.onSearchSubmit}>
             Search
           </Search>
         </div>
-        { result ? <Table list={result.hits} pattern={query} /> : null }
+        { result && <Table list={result.hits} /> }
       </div>
     );
   }
