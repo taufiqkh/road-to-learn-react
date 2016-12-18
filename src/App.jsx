@@ -68,7 +68,7 @@ const Table = ({ list, sortKey, onSort }) =>
             {item.author}
           </span>
           <span style={smallColumn}>
-            {item.numComments}
+            {item.num_comments}
           </span>
           <span style={smallColumn}>
             {item.points}

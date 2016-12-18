@@ -198,7 +198,9 @@ exports[`Table snapshot 1`] = `
         Object {
           "width": "15%",
         }
-      } />
+      }>
+      1
+    </span>
     <span
       style={
         Object {
@@ -234,7 +236,9 @@ exports[`Table snapshot 1`] = `
         Object {
           "width": "15%",
         }
-      } />
+      }>
+      1
+    </span>
     <span
       style={
         Object {
