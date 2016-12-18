@@ -4,12 +4,15 @@
   "private": true,
   "homepage": ".",
   "devDependencies": {
+    "enzyme": "^2.6.0",
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
-    "react-scripts": "0.8.4"
+    "react-addons-test-utils": "^15.4.1",
+    "react-scripts": "0.8.4",
+    "react-test-renderer": "^15.4.1"
   },
   "dependencies": {
     "react": "^15.4.1",
