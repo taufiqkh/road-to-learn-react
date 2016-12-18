@@ -11,12 +11,6 @@ const PARAM_SEARCH = 'query=';
 const PARAM_PAGE = 'page=';
 const PARAM_PP = 'hitsPerPage=';
 
-function isSearched(query) {
-  return function isQuerySearchedOn(item) {
-    return !query || item.title.toLowerCase().indexOf(query.toLowerCase()) !== -1;
-  };
-}
-
 const Search = ({ value, onChange, onSubmit, children }) =>
   (
     <form onSubmit={onSubmit}>
@@ -61,24 +55,31 @@ class App extends Component {
     super(props);
 
     this.state = {
-      result: null,
+      results: {},
       query: DEFAULT_QUERY,
+      searchKey: '',
     };
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
+
+    this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
   }
 
   componentDidMount() {
     const { query } = this.state;
     this.fetchSearchTopStories(query);
+    this.setState({ searchKey: query });
   }
 
   onSearchSubmit(event) {
     const { query } = this.state;
-    this.fetchSearchTopStories(query, DEFAULT_PAGE);
+    if (this.needsToSearchTopStories(query)) {
+      this.fetchSearchTopStories(query, DEFAULT_PAGE);
+    }
+    this.setState({ searchKey: query });
     event.preventDefault();
   }
 
@@ -88,9 +89,16 @@ class App extends Component {
 
   setSearchTopStories(result) {
     const { hits, page } = result;
-    const oldHits = page === 0 ? [] : this.state.result.hits;
+    const { searchKey } = this.state;
+    const oldHits = page === 0 ? [] : this.state.results[searchKey].hits;
     const updatedHits = [...oldHits, ...hits];
-    this.setState({ result: { hits: updatedHits, page } });
+    this.setState({
+      results: { ...this.state.results, [searchKey]: { hits: updatedHits, page } },
+    });
+  }
+
+  needsToSearchTopStories(query) {
+    return !this.state.results[query];
   }
 
   fetchSearchTopStories(query, page = 0, hpp = DEFAULT_HPP) {
@@ -100,8 +108,9 @@ class App extends Component {
   }
 
   render() {
-    const { query, result } = this.state;
-    const page = (result && result.page) || 0;
+    const { query, results, searchKey } = this.state;
+    const page = (results && results[query] && results[query].page) || 0;
+    const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
     return (
       <div className="page">
@@ -110,9 +119,9 @@ class App extends Component {
             Search
           </Search>
         </div>
-        { result && <Table list={result.hits} /> }
+        <Table list={list} />
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(query, page + 1)}>More</Button>
+          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>More</Button>
         </div>
       </div>
     );
@@ -120,3 +129,9 @@ class App extends Component {
 }
 
 export default App;
+
+export {
+  Button,
+  Search,
+  Table,
+};
