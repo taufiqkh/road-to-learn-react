@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { sortBy } from 'lodash';
+import classNames from 'classnames';
 import './App.css';
 
 const DEFAULT_QUERY = 'redux';
@@ -37,10 +38,15 @@ const Button = ({ onClick, children }) =>
     {children}
   </button>;
 
-const Sort = ({ sortKey, onSort, children }) =>
-  <Button onClick={() => onSort(sortKey)}>
-    {children}
-  </Button>;
+const Sort = ({ sortKey, activeSortKey, onSort, children }) => {
+  const sortClass = classNames('button-inline',
+    { 'button-active': sortKey === activeSortKey });
+  return (
+    <button onClick={() => onSort(sortKey)} className={sortClass} type="button">
+      {children}
+    </button>
+  );
+};
 
 const Table = ({ list, sortKey, onSort, isSortReverse }) => {
   const sortedList = SORTS[sortKey](list);
@@ -49,16 +55,16 @@ const Table = ({ list, sortKey, onSort, isSortReverse }) => {
     <div className="table">
       <div className="table-header">
         <span style={largeColumn}>
-          <Sort sortKey={'TITLE'} onSort={onSort}>Title</Sort>
+          <Sort sortKey={'TITLE'} onSort={onSort} activeSortKey={sortKey}>Title</Sort>
         </span>
         <span style={midColumn}>
-          <Sort sortKey={'AUTHOR'} onSort={onSort}>Author</Sort>
+          <Sort sortKey={'AUTHOR'} onSort={onSort} activeSortKey={sortKey}>Author</Sort>
         </span>
         <span style={smallColumn}>
-          <Sort sortKey={'COMMENTS'} onSort={onSort}>Comments</Sort>
+          <Sort sortKey={'COMMENTS'} onSort={onSort} activeSortKey={sortKey}>Comments</Sort>
         </span>
         <span style={smallColumn}>
-          <Sort sortKey={'POINTS'} onSort={onSort}>Points</Sort>
+          <Sort sortKey={'POINTS'} onSort={onSort} activeSortKey={sortKey}>Points</Sort>
         </span>
       </div>
       { reverseSortedList.map(item =>
