@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { sortBy } from 'lodash';
 import './App.css';
 
 const DEFAULT_QUERY = 'redux';
@@ -10,6 +11,14 @@ const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 const PARAM_PAGE = 'page=';
 const PARAM_PP = 'hitsPerPage=';
+
+const SORTS = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, 'title'),
+  AUTHOR: list => sortBy(list, 'author'),
+  COMMENTS: list => sortBy(list, 'num_comments').reverse(),
+  POINTS: list => sortBy(list, 'points').reverse(),
+};
 
 const Search = ({ value, onChange, onSubmit, children }) =>
   (
@@ -28,10 +37,29 @@ const Button = ({ onClick, children }) =>
     {children}
   </button>;
 
-const Table = ({ list }) =>
+const Sort = ({ sortKey, onSort, children }) =>
+  <Button onClick={() => onSort(sortKey)}>
+    {children}
+  </Button>;
+
+const Table = ({ list, sortKey, onSort }) =>
   (
     <div className="table">
-      { list.map(item =>
+      <div className="table-header">
+        <span style={largeColumn}>
+          <Sort sortKey={'TITLE'} onSort={onSort}>Title</Sort>
+        </span>
+        <span style={midColumn}>
+          <Sort sortKey={'AUTHOR'} onSort={onSort}>Author</Sort>
+        </span>
+        <span style={smallColumn}>
+          <Sort sortKey={'COMMENTS'} onSort={onSort}>Comments</Sort>
+        </span>
+        <span style={smallColumn}>
+          <Sort sortKey={'POINTS'} onSort={onSort}>Points</Sort>
+        </span>
+      </div>
+      { SORTS[sortKey](list).map(item =>
         <div key={item.objectID} className="table-row">
           <span style={largeColumn}>
             <a href={item.url}>{item.title}</a>
@@ -66,13 +94,14 @@ class App extends Component {
       query: DEFAULT_QUERY,
       searchKey: '',
       isLoading: false,
+      sortKey: 'NONE',
     };
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
-
+    this.onSort = this.onSort.bind(this);
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
   }
 
@@ -93,6 +122,10 @@ class App extends Component {
 
   onSearchChange(event) {
     this.setState({ query: event.target.value });
+  }
+
+  onSort(sortKey) {
+    this.setState({ sortKey });
   }
 
   setSearchTopStories(result) {
@@ -119,7 +152,7 @@ class App extends Component {
   }
 
   render() {
-    const { query, results, searchKey, isLoading } = this.state;
+    const { query, results, searchKey, isLoading, sortKey } = this.state;
     const page = (results && results[query] && results[query].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
@@ -130,7 +163,7 @@ class App extends Component {
             Search
           </Search>
         </div>
-        <Table list={list} />
+        <Table list={list} sortKey={sortKey} onSort={this.onSort} />
         <div className="interactions">
           <ButtonWithLoading
             isLoading={isLoading}

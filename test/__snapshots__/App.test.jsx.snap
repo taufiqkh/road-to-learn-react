@@ -16,7 +16,59 @@ exports[`App snapshots 1`] = `
     </form>
   </div>
   <div
-    className="table" />
+    className="table">
+    <div
+      className="table-header">
+      <span
+        style={
+          Object {
+            "width": "40%",
+          }
+        }>
+        <button
+          onClick={[Function]}
+          type="button">
+          Title
+        </button>
+      </span>
+      <span
+        style={
+          Object {
+            "width": "30%",
+          }
+        }>
+        <button
+          onClick={[Function]}
+          type="button">
+          Author
+        </button>
+      </span>
+      <span
+        style={
+          Object {
+            "width": "15%",
+          }
+        }>
+        <button
+          onClick={[Function]}
+          type="button">
+          Comments
+        </button>
+      </span>
+      <span
+        style={
+          Object {
+            "width": "15%",
+          }
+        }>
+        <button
+          onClick={[Function]}
+          type="button">
+          Points
+        </button>
+      </span>
+    </div>
+  </div>
   <div
     className="interactions">
     <div>
@@ -69,6 +121,57 @@ exports[`Search snapshots 1`] = `
 exports[`Table snapshot 1`] = `
 <div
   className="table">
+  <div
+    className="table-header">
+    <span
+      style={
+        Object {
+          "width": "40%",
+        }
+      }>
+      <button
+        onClick={[Function]}
+        type="button">
+        Title
+      </button>
+    </span>
+    <span
+      style={
+        Object {
+          "width": "30%",
+        }
+      }>
+      <button
+        onClick={[Function]}
+        type="button">
+        Author
+      </button>
+    </span>
+    <span
+      style={
+        Object {
+          "width": "15%",
+        }
+      }>
+      <button
+        onClick={[Function]}
+        type="button">
+        Comments
+      </button>
+    </span>
+    <span
+      style={
+        Object {
+          "width": "15%",
+        }
+      }>
+      <button
+        onClick={[Function]}
+        type="button">
+        Points
+      </button>
+    </span>
+  </div>
   <div
     className="table-row">
     <span
