@@ -52,6 +52,11 @@ const Table = ({ list }) =>
 
 const Loading = () => <div>Loading...</div>;
 
+const withLoading = (Component) => ({ isLoading, ...props }) =>
+  isLoading ? <Loading /> : <Component {...props} />;
+
+const ButtonWithLoading = withLoading(Button);
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -127,10 +132,12 @@ class App extends Component {
         </div>
         <Table list={list} />
         <div className="interactions">
-          { isLoading ?
-              <Loading /> :
-              <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>More</Button>
-          }
+          <ButtonWithLoading
+            isLoading={isLoading}
+            onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
+          >
+            More
+          </ButtonWithLoading>
         </div>
       </div>
     );
@@ -144,4 +151,5 @@ export {
   Search,
   Table,
   Loading,
+  ButtonWithLoading,
 };

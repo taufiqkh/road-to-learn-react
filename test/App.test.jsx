@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import App from '../src/App';
-import { Search, Button, Table, Loading } from '../src/App';
+import { Search, Button, Table, Loading, ButtonWithLoading } from '../src/App';
 
 describe('App', () => {
   it('renders without crashing', () => {
@@ -79,11 +79,15 @@ describe('Table', () => {
   });
 });
 
-describe('Loading', () => {
-  it('renders', () => {
+const renderFunc = function itRenders(CompToRender) {
+  return () => {
     const div = document.createElement('div');
-    ReactDOM.render(<Loading />, div);
-  });
+    ReactDOM.render(<CompToRender />, div);
+  };
+};
+
+describe('Loading', () => {
+  it('renders', renderFunc(Loading));
 
   test('snapshot', () => {
     const component = renderer.create(
@@ -91,5 +95,24 @@ describe('Loading', () => {
     );
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
-  })
+  });
+});
+
+describe('ButtonWithLoading', () => {
+  it('renders', renderFunc(ButtonWithLoading));
+
+  test('snapshot isLoading', () => {
+    const component = renderer.create(
+      <ButtonWithLoading isLoading={true} />,
+    );
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+  test('snapshot notLoading', () => {
+    const component = renderer.create(
+      <ButtonWithLoading isLoading={false} />,
+    );
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 });

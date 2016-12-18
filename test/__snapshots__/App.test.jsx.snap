@@ -34,6 +34,18 @@ exports[`Button snapshot 1`] = `
 </button>
 `;
 
+exports[`ButtonWithLoading snapshot isLoading 1`] = `
+<div>
+  Loading...
+</div>
+`;
+
+exports[`ButtonWithLoading snapshot notLoading 1`] = `
+<button
+  onClick={undefined}
+  type="button" />
+`;
+
 exports[`Loading snapshot 1`] = `
 <div>
   Loading...
