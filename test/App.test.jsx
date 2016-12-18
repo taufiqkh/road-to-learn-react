@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import renderer from 'react-test-renderer';
+import { shallow } from 'enzyme';
 import App from '../src/App';
-import { Search, Button, Table } from '../src/App';
+import { Search, Button, Table, Loading } from '../src/App';
 
 describe('App', () => {
   it('renders without crashing', () => {
@@ -59,7 +60,14 @@ describe('Table', () => {
 
   it('renders', () => {
     const div = document.createElement('div');
-    ReactDOM.render(<Table { ...props } />, div);
+    ReactDOM.render(<Table {...props} />, div);
+  });
+
+  it('shows two items in lists', () => {
+    const element = shallow(
+      <Table {...props} />
+    );
+    expect(element.find('.table-row').length).toBe(2);
   });
 
   test('snapshot', () => {
@@ -69,4 +77,19 @@ describe('Table', () => {
     const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
+});
+
+describe('Loading', () => {
+  it('renders', () => {
+    const div = document.createElement('div');
+    ReactDOM.render(<Loading />, div);
+  });
+
+  test('snapshot', () => {
+    const component = renderer.create(
+      <Loading />,
+    );
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  })
 });

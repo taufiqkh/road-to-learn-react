@@ -19,11 +19,9 @@ exports[`App snapshots 1`] = `
     className="table" />
   <div
     className="interactions">
-    <button
-      onClick={[Function]}
-      type="button">
-      More
-    </button>
+    <div>
+      Loading...
+    </div>
   </div>
 </div>
 `;
@@ -34,6 +32,12 @@ exports[`Button snapshot 1`] = `
   type="button">
   Give me more
 </button>
+`;
+
+exports[`Loading snapshot 1`] = `
+<div>
+  Loading...
+</div>
 `;
 
 exports[`Search snapshots 1`] = `

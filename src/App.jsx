@@ -50,6 +50,8 @@ const Table = ({ list }) =>
     </div>
   );
 
+const Loading = () => <div>Loading...</div>;
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -58,6 +60,7 @@ class App extends Component {
       results: {},
       query: DEFAULT_QUERY,
       searchKey: '',
+      isLoading: false,
     };
 
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
@@ -94,6 +97,7 @@ class App extends Component {
     const updatedHits = [...oldHits, ...hits];
     this.setState({
       results: { ...this.state.results, [searchKey]: { hits: updatedHits, page } },
+      isLoading: false,
     });
   }
 
@@ -102,13 +106,15 @@ class App extends Component {
   }
 
   fetchSearchTopStories(query, page = 0, hpp = DEFAULT_HPP) {
+    this.setState({ isLoading: true });
+
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${query}&${PARAM_PAGE}${page}&${PARAM_PP}${hpp}`)
       .then(response => response.json())
       .then(result => this.setSearchTopStories(result));
   }
 
   render() {
-    const { query, results, searchKey } = this.state;
+    const { query, results, searchKey, isLoading } = this.state;
     const page = (results && results[query] && results[query].page) || 0;
     const list = (results && results[searchKey] && results[searchKey].hits) || [];
 
@@ -121,7 +127,10 @@ class App extends Component {
         </div>
         <Table list={list} />
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>More</Button>
+          { isLoading ?
+              <Loading /> :
+              <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>More</Button>
+          }
         </div>
       </div>
     );
@@ -134,4 +143,5 @@ export {
   Button,
   Search,
   Table,
+  Loading,
 };
